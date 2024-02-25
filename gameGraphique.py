@@ -131,10 +131,10 @@ class CombatGUI:
             vie_max = self.get_vie_joka(self.id_joka2)
             self.vie_joka2 = min(vie_max, self.vie_joka2 + puissance_soin)
 
-def main():
+def Combat(ID_Joka1, ID_Joka2):
     root = tk.Tk()
-    app = CombatGUI(root, 0, 1)
+    app = CombatGUI(root, ID_Joka1, ID_Joka2)
     root.mainloop()
 
 if __name__ == "__main__":
-    main()
+    Combat(0, 1)
