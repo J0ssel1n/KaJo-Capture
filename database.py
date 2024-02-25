@@ -62,3 +62,12 @@ def get_jokas_by_status(status):
     cursor.execute(f"SELECT Joka.Nom FROM Joka INNER JOIN Statut ON Joka.ID_Joka = Statut.ID_Joka WHERE estCapturé = '{status}'")
     jokas = cursor.fetchall()
     return [joka[0] for joka in jokas]
+
+def get_type_attaque(self, nom_attaque, id_joka):
+    self.curseur.execute("""
+        SELECT Type
+        FROM Technique
+        WHERE Nom = ? AND ID_Joka = ?
+    """, (nom_attaque, id_joka))
+    type_attaque = self.curseur.fetchone()[0]
+    return type_attaque

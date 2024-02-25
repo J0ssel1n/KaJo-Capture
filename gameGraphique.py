@@ -1,84 +1,140 @@
 import sqlite3
+import tkinter as tk
+from tkinter import ttk, messagebox
 import random
 
-class Combat:
-    def __init__(self, id_joka1, id_joka2):
-        self.id_joka1 = id_joka1
-        self.id_joka2 = id_joka2
+class CombatGUI:
+    def __init__(self, parent, id_joka1, id_joka2):
+        self.parent = parent
+        self.parent.title("Combat de Jokas")
+        
+        screen_width = parent.winfo_screenwidth()
+        screen_height = parent.winfo_screenheight()
+
+        x = (screen_width - parent.winfo_reqwidth()) / 2
+        y = (screen_height - parent.winfo_reqheight()) / 2
+
+        parent.geometry("+%d+%d" % (x, y))
+
         self.conn = sqlite3.connect('Database.db')
         self.curseur = self.conn.cursor()
 
+        self.id_joka1 = id_joka1
+        self.id_joka2 = id_joka2
+
+        self.nom_joka1 = self.get_nom_joka(self.id_joka1)
+        self.nom_joka2 = self.get_nom_joka(self.id_joka2)
+
+        self.vie_joka1 = self.get_vie_joka(self.id_joka1)
+        self.vie_joka2 = self.get_vie_joka(self.id_joka2)
+
+        self.vie_joka1_label = ttk.Label(parent, text=f"Vie {self.nom_joka1}: {self.vie_joka1}")
+        self.vie_joka1_label.pack()
+
+        self.vie_joka2_label = ttk.Label(parent, text=f"Vie {self.nom_joka2}: {self.vie_joka2}")
+        self.vie_joka2_label.pack()
+
+        self.techniques_joka1 = self.get_techniques_disponibles(self.id_joka1)
+
+        self.technique_label = ttk.Label(parent, text="Choisir une technique:")
+        self.technique_label.pack()
+
+        self.technique_choisie = tk.StringVar()
+        self.technique_menu = ttk.OptionMenu(parent, self.technique_choisie, self.techniques_joka1[0], *self.techniques_joka1)
+        self.technique_menu.pack()
+
+        self.confirm_button = ttk.Button(parent, text="Confirmer la technique", command=self.confirmer_technique)
+        self.confirm_button.pack()
+
     def get_nom_joka(self, id_joka):
         self.curseur.execute("SELECT Nom FROM Joka WHERE ID_Joka = ?", (id_joka,))
-        nom_joka = self.curseur.fetchone()[0]
-        return nom_joka
+        nom = self.curseur.fetchone()[0]
+        return nom
 
-    def get_vie_joka(self, nom_joka):
-        self.curseur.execute("SELECT Vie FROM Joka WHERE Nom = ?", (nom_joka,))
-        vie_joka = self.curseur.fetchone()[0]
-        return vie_joka
+    def get_vie_joka(self, id_joka):
+        self.curseur.execute("SELECT Vie FROM Joka WHERE ID_Joka = ?", (id_joka,))
+        vie = self.curseur.fetchone()[0]
+        return vie
 
-    def get_attaques_disponibles(self, id_joka):
+    def get_techniques_disponibles(self, id_joka):
         self.curseur.execute("""
-            SELECT Technique.Nom, Technique.Puissance, Technique.Type
+            SELECT Technique.Nom
             FROM Technique
             INNER JOIN Association ON Technique.ID_Technique = Association.ID_Technique
             WHERE Association.ID_Joka = ?
         """, (id_joka,))
-        attaques = self.curseur.fetchall()
-        return attaques
+        techniques = self.curseur.fetchall()
+        return [technique[0] for technique in techniques]
 
-    def combat(self):
-        nom_joka1 = self.get_nom_joka(self.id_joka1)
-        nom_joka2 = self.get_nom_joka(self.id_joka2)
-        vie_joka1 = self.get_vie_joka(nom_joka1)
-        vie_joka2 = self.get_vie_joka(nom_joka2)
-        vie_max_joka1 = vie_joka1
-        vie_max_joka2 = vie_joka2
+    def confirmer_technique(self):
+        technique_choisie = self.technique_choisie.get()
+        puissance_technique = self.get_puissance_technique(technique_choisie, self.id_joka1)
 
-        print(f"\nCombat entre {nom_joka1} (Vie: {vie_joka1}) et {nom_joka2} (Vie: {vie_joka2})")
+        if self.get_type_technique(technique_choisie) == "Soin":
+            self.appliquer_soin(self.id_joka1, puissance_technique)
+            messagebox.showinfo("Mise à jour", f"{self.nom_joka1} utilise {technique_choisie} et regagne {puissance_technique} points de vie.")
+        else:
+            self.appliquer_technique(self.id_joka2, puissance_technique)
+            messagebox.showinfo("Mise à jour", f"{self.nom_joka1} utilise {technique_choisie} et inflige {puissance_technique} points de dégâts à {self.nom_joka2}.")
 
-        attaques_joka1 = self.get_attaques_disponibles(self.id_joka1)
-        attaques_joka2 = self.get_attaques_disponibles(self.id_joka2)
+        technique_choisie_adverse = random.choice(self.get_techniques_disponibles(self.id_joka2))
+        puissance_technique_adverse = self.get_puissance_technique(technique_choisie_adverse, self.id_joka2)
+        
+        if self.get_type_technique(technique_choisie_adverse) == "Soin":
+            self.appliquer_soin(self.id_joka2, puissance_technique_adverse)
+            messagebox.showinfo("Mise à jour", f"{self.nom_joka2} utilise {technique_choisie_adverse} et regagne {puissance_technique_adverse} points de vie.")
+        else:
+            self.appliquer_technique(self.id_joka1, puissance_technique_adverse)
+            messagebox.showinfo("Mise à jour", f"{self.nom_joka2} utilise {technique_choisie_adverse} et inflige {puissance_technique_adverse} points de dégâts à {self.nom_joka1}.")
 
-        while vie_joka1 > 0 and vie_joka2 > 0:
-            print(f"\n{nom_joka1} peut utiliser les attaques suivantes:")
-            for index, attaque in enumerate(attaques_joka1):
-                print(f"{index + 1}. {attaque[0]} - Puissance: {attaque[1]} - Type: {attaque[2]}")
+        self.vie_joka1_label.config(text=f"Vie {self.nom_joka1}: {self.vie_joka1}")
+        self.vie_joka2_label.config(text=f"Vie {self.nom_joka2}: {self.vie_joka2}")
 
-            choix_attaque_joka1 = int(input(f"\nChoisissez une attaque pour {nom_joka1} : "))
-            attaque_choisie_joka1 = attaques_joka1[choix_attaque_joka1 - 1]
-            print(f"\nVous avez choisi {attaque_choisie_joka1[0]} - Puissance: {attaque_choisie_joka1[1]} - Type: {attaque_choisie_joka1[2]}")
+        if self.vie_joka1 <= 0:
+            messagebox.showinfo("Fin du combat", f"{self.nom_joka2} a gagné !")
+            self.parent.quit()
+        elif self.vie_joka2 <= 0:
+            messagebox.showinfo("Fin du combat", f"{self.nom_joka1} a gagné !")
+            self.parent.quit()
 
-            if vie_joka2 < vie_max_joka2:
-                attaque_choisie_joka2 = random.choice(attaques_joka2)
-                print(f"\n{nom_joka2} choisit {attaque_choisie_joka2[0]} - Puissance: {attaque_choisie_joka2[1]} - Type: {attaque_choisie_joka2[2]}")
-            else:
-                attaque_choisie_joka2 = random.choice([attaque for attaque in attaques_joka2 if attaque[2] == "Attaque"])
-                print(f"\n{nom_joka2} choisit {attaque_choisie_joka2[0]} - Puissance: {attaque_choisie_joka2[1]} - Type: {attaque_choisie_joka2[2]} (automatique)")
+    def get_puissance_technique(self, nom_technique, id_joka):
+        self.curseur.execute("""
+            SELECT Puissance
+            FROM Technique
+            WHERE Nom = ?
+        """, (nom_technique,))
+        puissance = self.curseur.fetchone()[0]
+        return puissance
 
-            if attaque_choisie_joka1[2] == "Attaque":
-                vie_joka2 -= attaque_choisie_joka1[1]
-            elif attaque_choisie_joka1[2] == "Soin":
-                if vie_joka1 < vie_max_joka1:
-                    vie_joka1 = min(vie_max_joka1, vie_joka1 + attaque_choisie_joka1[1])
+    def get_type_technique(self, nom_technique):
+        self.curseur.execute("""
+            SELECT Type
+            FROM Technique
+            WHERE Nom = ?
+        """, (nom_technique,))
+        type_technique = self.curseur.fetchone()[0]
+        return type_technique
 
-            if attaque_choisie_joka2[2] == "Attaque":
-                vie_joka1 -= attaque_choisie_joka2[1]
-            elif attaque_choisie_joka2[2] == "Soin":
-                if vie_joka2 < vie_max_joka2:
-                    vie_joka2 = min(vie_max_joka2, vie_joka2 + attaque_choisie_joka2[1])
+    def appliquer_technique(self, id_joka, puissance_technique):
+        self.curseur.execute("SELECT Vie FROM Joka WHERE ID_Joka = ?", (id_joka,))
 
-            print(f"\nVie restante de {nom_joka1}: {vie_joka1}")
-            print(f"Vie restante de {nom_joka2}: {vie_joka2}")
+        if id_joka == self.id_joka1:
+            self.vie_joka1 = max(0, self.vie_joka1 - puissance_technique)
+        else:
+            self.vie_joka2 = max(0, self.vie_joka2 - puissance_technique)
 
-        if vie_joka1 <= 0:
-            print(f"\n{nom_joka2} remporte le combat !")
-        elif vie_joka2 <= 0:
-            print(f"\n{nom_joka1} remporte le combat !")
+    def appliquer_soin(self, id_joka, puissance_soin):
+        if id_joka == self.id_joka1:
+            vie_max = self.get_vie_joka(self.id_joka1)
+            self.vie_joka1 = min(vie_max, self.vie_joka1 + puissance_soin)
+        else:
+            vie_max = self.get_vie_joka(self.id_joka2)
+            self.vie_joka2 = min(vie_max, self.vie_joka2 + puissance_soin)
 
-        self.conn.close()
+def main():
+    root = tk.Tk()
+    app = CombatGUI(root, 0, 1)
+    root.mainloop()
 
-if __name__ == '__main__':
-    combat_instance = Combat(0, 1)
-    combat_instance.combat()
+if __name__ == "__main__":
+    main()
