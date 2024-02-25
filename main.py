@@ -167,7 +167,7 @@ tree.pack(fill='both', expand=True)
 
 def afficher_details_joka(event):
     item = tree.selection()[0]
-    joka_id = tree.item(item, "values")[0]  # Obtenez l'ID du Joka sélectionné
+    joka_id = tree.item(item, "values")[0]
 
     joka_name = database.get_joka_name_by_id(joka_id)
     joka_info = database.get_joka_info_by_id(joka_id)
