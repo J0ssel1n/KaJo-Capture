@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 
 import database
+from gameGraphique import *
 
 joka_principal = None
 
@@ -27,10 +28,15 @@ def choisir_joka_principal():
 
     def valider_selection():
         global joka_principal
-        joka_principal = jokas_dropdown.get()
-        if joka_principal:
-            joka_principal_window.destroy()
-            root.deiconify()
+        joka_principal_name = jokas_dropdown.get()
+        if joka_principal_name:
+            joka_principal_id = database.get_joka_id_by_name(joka_principal_name)
+            if joka_principal_id:
+                joka_principal = joka_principal_id[0]
+                joka_principal_window.destroy()
+                root.deiconify()
+            else:
+                messagebox.showwarning("Attention", "ID du Joka Principal non trouvé.")
         else:
             messagebox.showwarning("Attention", "Veuillez Sélectionner un Joka pour Commencer votre Service.")
 
@@ -90,12 +96,20 @@ def confirmer_changement_couleur(nom, canvas, circles, positions, voisins):
 
     if messagebox.askyesno("Confirmation", confirmation_message):
         circle_id = circles[nom]
-        canvas.itemconfig(circle_id, fill="green")
-        for voisin in voisins:
-            voisin = voisin.strip()
-            if voisin in positions and voisin in circles:
-                voisin_id = circles[voisin]
-                canvas.itemconfig(voisin_id, fill="green")
+        combat_results = []
+        for joka_id in jokas_ids:
+            combat_result = Combat(joka_principal, joka_id)
+            combat_results.append(combat_result)
+
+        if all(combat_results):
+            canvas.itemconfig(circle_id, fill="green")
+            for voisin in voisins:
+                voisin = voisin.strip()
+                if voisin in positions and voisin in circles:
+                    voisin_id = circles[voisin]
+                    canvas.itemconfig(voisin_id, fill="green")
+        else:
+            messagebox.showinfo("Information", "Combat échoué. Impossible de colorier les zones voisines.")
 
 def on_cercle_click(nom, position, voisins, positions, circles):
     if nom.strip() in circles:
@@ -150,6 +164,36 @@ for row in database.get_joka_table():
     tree.insert("", "end", values=row)
 
 tree.pack(fill='both', expand=True)
+
+def afficher_details_joka(event):
+    item = tree.selection()[0]
+    joka_id = tree.item(item, "values")[0]  # Obtenez l'ID du Joka sélectionné
+
+    joka_name = database.get_joka_name_by_id(joka_id)
+    joka_info = database.get_joka_info_by_id(joka_id)
+    joka_status = database.get_jokas_by_status("Oui") if joka_name in database.get_jokas_by_status("Oui") else None
+
+    if joka_name and joka_info:
+        joka_window = tk.Toplevel()
+        joka_window.title("Détails du Joka")
+
+        label_nom = tk.Label(joka_window, text="Nom du Joka : " + joka_name)
+        label_nom.pack()
+
+        label_vie = tk.Label(joka_window, text="Vie du Joka : " + str(joka_info["Vie"]))
+        label_vie.pack()
+
+        label_statut = tk.Label(joka_window, text="Statut : " + ("Capturé" if joka_status else "Non Capturé"))
+        label_statut.pack()
+
+        button_selectionner = tk.Button(joka_window, text="Choisir en Joka Principal",
+                                        command=lambda: choisir_joka_principal(joka_id))
+        button_selectionner.pack()
+
+    else:
+        messagebox.showwarning("Attention", "Détails du Joka Non Trouvés dans la Base de Données.")
+
+tree.bind("<Double-1>", afficher_details_joka)
 
 canvas = tk.Canvas(right_frame, width=800, height=800)
 canvas.pack()

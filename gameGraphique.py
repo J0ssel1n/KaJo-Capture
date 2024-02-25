@@ -93,9 +93,12 @@ class CombatGUI:
         if self.vie_joka1 <= 0:
             messagebox.showinfo("Fin du combat", f"{self.nom_joka2} a gagné !")
             self.parent.quit()
+            return False
+        
         elif self.vie_joka2 <= 0:
             messagebox.showinfo("Fin du combat", f"{self.nom_joka1} a gagné !")
             self.parent.quit()
+            return True
 
     def get_puissance_technique(self, nom_technique, id_joka):
         self.curseur.execute("""

@@ -61,13 +61,24 @@ def get_jokas_by_status(status):
     cursor = conn.cursor()
     cursor.execute(f"SELECT Joka.Nom FROM Joka INNER JOIN Statut ON Joka.ID_Joka = Statut.ID_Joka WHERE estCapturé = '{status}'")
     jokas = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return [joka[0] for joka in jokas]
 
-def get_type_attaque(self, nom_attaque, id_joka):
-    self.curseur.execute("""
-        SELECT Type
-        FROM Technique
-        WHERE Nom = ? AND ID_Joka = ?
-    """, (nom_attaque, id_joka))
-    type_attaque = self.curseur.fetchone()[0]
-    return type_attaque
+# def get_type_attaque(self, nom_attaque, id_joka):
+#     self.curseur.execute("""
+#         SELECT Type
+#         FROM Technique
+#         WHERE Nom = ? AND ID_Joka = ?
+#     """, (nom_attaque, id_joka))
+#     type_attaque = self.curseur.fetchone()[0]
+#     return type_attaque
+
+def get_joka_id_by_name(joka_name):
+    conn = sqlite3.connect("Database.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT ID_Joka FROM Joka WHERE Nom = ?", (joka_name,))
+    id_joka = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return id_joka
