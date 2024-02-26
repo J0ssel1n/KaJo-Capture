@@ -17,4 +17,22 @@ Par les créateurs du célèbre **AlssExpress**, découvrez **Kajo Capture**, un
 
 # Fonctionnement
 
-Le jeu utilise une base de données (**Database.db**) contenant des informations tels que les Jokas, la Carte, les Techniques utilisées par les Créatures, etc...
+Le jeu codé en Python utilise une base de données (**Database.db**) contenant des informations tels que les Jokas, la Carte, les Techniques utilisées par les Créatures, etc...
+
+Google Colaboratory a été utiliser pour construire cette Base de Données (utile pour Tester et Afficher les Tables). Voici le lien pour télécharger un fichier **Database.db** (Exécution > Tout exécuter > Attendre).
+
+Le module Sqlite3 a été utilisé pour Communiquer avec la Base de Données. Le module Tkinter a été utilisé pour la partie Graphique du Programme. Un version **Console** du Système de Combat est disponible dans <a href="https://github.com/J0ssel1n/KaJo-Capture/blob/main/game.py">game.py</a>.
+
+# Installation
+
+**Le Programme n'est pas encore Disponible** et est toujours en Phase de Test. Il reste des Bugs à régler (notamment celui où le Joka Principal n'en fait qu'à sa tête en Combat dans <a href="https://github.com/J0ssel1n/KaJo-Capture/blob/main/main.py">main.py</a>. Vous pourrez retrouvez un exécutable en _.exe_ créé avec PyInstaller dans <a href="https://github.com/J0ssel1n/KaJo-Capture/releases">Releases</a>.
+
+# Rapport de Projet
+
+Le Rapport est en Cours de Rédaction.
+
+# Informations
+
+Ce Projet utilise la licence Creative Commons Attribution-NoDerivatives qui autorise la distribution mais interdit toute modification ou adaptation.
+
+Ce Texte a été rédigé en Markdown pour Présenter le Projet sur GitHub. Merci de votre Lecture.
