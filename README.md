@@ -21,7 +21,7 @@ Le jeu codé en Python utilise une base de données (**Database.db**) contenant 
 
 Google Colaboratory a été utiliser pour construire cette Base de Données (utile pour Tester et Afficher les Tables). Voici le lien pour télécharger un fichier **Database.db** (Exécution > Tout exécuter > Attendre).
 
-Le module Sqlite3 a été utilisé pour Communiquer avec la Base de Données. Le module Tkinter a été utilisé pour la partie Graphique du Programme. Un version **Console** du Système de Combat est disponible dans <a href="https://github.com/J0ssel1n/KaJo-Capture/blob/main/game.py">game.py</a>.
+Le module SQLite3 a été utilisé pour Communiquer avec la Base de Données. Le module Tkinter a été utilisé pour la partie Graphique du Programme. Un version **Console** du Système de Combat est disponible dans <a href="https://github.com/J0ssel1n/KaJo-Capture/blob/main/game.py">game.py</a>.
 
 # Installation
 
