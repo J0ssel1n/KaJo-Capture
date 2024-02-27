@@ -75,6 +75,11 @@ def generer_map(taille):
 def creer_map(liste_niveaux, taille):
     """
     Génère une Carte remplie de Valeurs sous Forme de Tuples.
+
+    Entrée : 
+        liste_niveaux, de Type list, est la Liste des Niveaux se Situant dans la Table Graphe de la Base de Données.
+        taille, de Type int, est la Taille de la Carte qui va Être Générée (voir Fonction generer_map(taille)).
+    Sortie : Retourne une Carte qui va Être Utilisé comme un Graphe.
     """
     map = generer_map(taille)
     for niveau in liste_niveaux:
@@ -83,6 +88,17 @@ def creer_map(liste_niveaux, taille):
     return map
 
 def inserer_niveau(map, position_x, position_y, nom, voisins):
+    """
+    Ajoute un Niveau dans le Graphe / dans la Carte.
+
+    Entrée :
+        map, de Type list, représente l'Ensemble du Graphe.
+        position_x, de Type int, est la Position sur l'Axe X du Niveau sur le Graphe.
+        position_y, de Type int, est la Position sur l'Axe Y du Niveau sur le Graphe.
+        nom, de Type str, est le Nom du Niveau.
+        voisins, de Type list, est la Liste des Voisins Connectés au Niveau en Cours de Création.
+    Sortie : Mets à Jour la Carte map en y Ajoutant un Niveau.
+    """
     map[position_y][position_x] = (nom, voisins)
 
 def afficher_map(map, canvas):
