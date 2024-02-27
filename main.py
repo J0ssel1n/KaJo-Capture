@@ -148,6 +148,7 @@ def confirmer_changement_couleur(nom, canvas, circles, positions, voisins):
             combat_window.mainloop()
             combat_results.append(app.result)
             root.deiconify()
+            combat_window.destroy()
 
         if all(combat_results):
             canvas.itemconfig(circle_id, fill="green")
@@ -180,10 +181,7 @@ screen_height = root.winfo_screenheight()
 window_width = int(screen_width * 0.75)
 window_height = int(screen_height * 0.75)
 
-x = (screen_width - window_width) / 2
-y = (screen_height - window_height) / 2
-
-root.geometry(f"{window_width}x{window_height}+{int(x)}+{int(y)}")
+root.attributes('-fullscreen', True)
 
 root.title("KaJo Capture")
 
