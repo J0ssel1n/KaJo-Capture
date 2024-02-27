@@ -2,8 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
-import database
-from gameGraphique import *
+import Database.database as database
+from Combat.gameGraphique import *
 
 joka_principal = None
 

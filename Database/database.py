@@ -1,7 +1,7 @@
 import sqlite3
 
 def get_joka_table():
-    conn = sqlite3.connect("Database.db")
+    conn = sqlite3.connect("Database/Database.db")
     cur = conn.cursor()
     cur.execute("SELECT * FROM Joka")
     tableJoka = cur.fetchall()
@@ -9,7 +9,7 @@ def get_joka_table():
     return tableJoka
 
 def get_technique_table():
-    conn = sqlite3.connect("Database.db")
+    conn = sqlite3.connect("Database/Database.db")
     cur = conn.cursor()
     cur.execute("SELECT * FROM Technique")
     tableTechnique = list(cur.fetchall())
@@ -17,7 +17,7 @@ def get_technique_table():
     return tableTechnique
 
 def get_graphe_table():
-    conn = sqlite3.connect("Database.db")
+    conn = sqlite3.connect("Database/Database.db")
     cur = conn.cursor()
     cur.execute("SELECT * FROM Graphe")
     tableGraphe = list(cur.fetchall())
@@ -25,7 +25,7 @@ def get_graphe_table():
     return tableGraphe
 
 def get_jokas_by_location(location):
-    conn = sqlite3.connect('Database.db')
+    conn = sqlite3.connect('Database/Database.db')
     c = conn.cursor()
     c.execute("SELECT ID_Joka FROM Apparition WHERE Lieu = ?", (location,))
     jokas = c.fetchall()
@@ -33,7 +33,7 @@ def get_jokas_by_location(location):
     return [joka[0] for joka in jokas] if jokas else []
 
 def get_joka_name_by_id(joka_id):
-    conn = sqlite3.connect('Database.db')
+    conn = sqlite3.connect('Database/Database.db')
     c = conn.cursor()
     c.execute("SELECT Nom FROM Joka WHERE ID_Joka = ?", (joka_id,))
     joka_name = c.fetchone()[0]
@@ -41,7 +41,7 @@ def get_joka_name_by_id(joka_id):
     return joka_name
 
 def get_joka_info_by_id(joka_id):
-    conn = sqlite3.connect("Database.db")
+    conn = sqlite3.connect("Database/Database.db")
     cursor = conn.cursor()
     cursor.execute("SELECT ID_Joka, Nom, Vie FROM Joka WHERE ID_Joka = ?", (joka_id,))
     joka_info = cursor.fetchone()
@@ -57,7 +57,7 @@ def get_joka_info_by_id(joka_id):
         return None
     
 def get_jokas_by_status(status):
-    conn = sqlite3.connect("Database.db")
+    conn = sqlite3.connect("Database/Database.db")
     cursor = conn.cursor()
     cursor.execute(f"SELECT Joka.Nom FROM Joka INNER JOIN Statut ON Joka.ID_Joka = Statut.ID_Joka WHERE estCapturé = '{status}'")
     jokas = cursor.fetchall()
@@ -65,17 +65,8 @@ def get_jokas_by_status(status):
     conn.close()
     return [joka[0] for joka in jokas]
 
-# def get_type_attaque(self, nom_attaque, id_joka):
-#     self.curseur.execute("""
-#         SELECT Type
-#         FROM Technique
-#         WHERE Nom = ? AND ID_Joka = ?
-#     """, (nom_attaque, id_joka))
-#     type_attaque = self.curseur.fetchone()[0]
-#     return type_attaque
-
 def get_joka_id_by_name(joka_name):
-    conn = sqlite3.connect("Database.db")
+    conn = sqlite3.connect("Database/Database.db")
     cursor = conn.cursor()
     cursor.execute("SELECT ID_Joka FROM Joka WHERE Nom = ?", (joka_name,))
     id_joka = cursor.fetchone()

@@ -5,7 +5,7 @@ class Combat:
     def __init__(self, id_joka1, id_joka2):
         self.id_joka1 = id_joka1
         self.id_joka2 = id_joka2
-        self.conn = sqlite3.connect('Database.db')
+        self.conn = sqlite3.connect('Database/Database.db')
         self.curseur = self.conn.cursor()
 
     def get_nom_joka(self, id_joka):
