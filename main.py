@@ -1,18 +1,26 @@
+# Importation des Modules Graphiques
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 
+# Importation du Gestionnaire de la Base de Données
 import Database.database as database
+
+# Importation de l'Interface Graphique de Combat
 from Combat.gameGraphique import *
 
-joka_principal = None
+joka_principal = None # Variable Globale pour Stocker l'Identifiant du Joka Principal
 
 def choisir_joka_principal():
+
+    # On Cache la Fenêtre Principale
     root.withdraw()
 
+    # On Crée une Nouvelle Fenêtre Pop-Up
     joka_principal_window = tk.Toplevel()
     joka_principal_window.title("Choisir le Joka Principal")
     
+    # Calcul de la Taille et de la Position Pour Centrer la Fenêtre au Milieu de l'Ecran
     window_width = 400
     window_height = 50
     screen_width = root.winfo_screenwidth()
@@ -22,17 +30,25 @@ def choisir_joka_principal():
     
     joka_principal_window.geometry(f"{window_width}x{window_height}+{x}+{y}")
 
+    # Récupération des Jokas Capturés depuis la Base de Données
     jokas = database.get_jokas_by_status("Oui")
+
+    # Création d'une Liste des Jokas Disponibles
     jokas_dropdown = ttk.Combobox(joka_principal_window, values=jokas)
     jokas_dropdown.pack()
 
+    # Si un élément est Selectionné dans la Liste
     def valider_selection():
         global joka_principal
         joka_principal_name = jokas_dropdown.get()
         if joka_principal_name:
+
+            # Récupération de l'Identifiant du Joka correspondant au Nom Selectionné
             joka_principal_id = database.get_joka_id_by_name(joka_principal_name)
             if joka_principal_id:
                 joka_principal = joka_principal_id[0]
+
+                # Destruction de la Fenêtre Pop-Up et Réapparition de la Fenêtre Principale
                 joka_principal_window.destroy()
                 root.deiconify()
             else:
@@ -40,23 +56,34 @@ def choisir_joka_principal():
         else:
             messagebox.showwarning("Attention", "Veuillez Sélectionner un Joka pour Commencer votre Service.")
 
+    # Bouton OK pour Valider la Sélection
     bouton_ok = tk.Button(joka_principal_window, text="OK", command=valider_selection)
     bouton_ok.pack()
 
+    # Attente que cette Fenêtre soit Fermée avant de Continuer
     joka_principal_window.wait_window(joka_principal_window)
 
 def generer_map(taille):
+    """
+    Génère une Carte remplie de Cases Vides.
+
+    Entrée : taille, de Type int, est le Nombre de Valeurs en Longueur et en Largeur de la Carte.
+    Sortie : Une Liste de Tableau de Tableaux représentant une Matrice.
+    """
     return [[False for _ in range(taille)] for _ in range(taille)]
 
-def inserer_niveau(map, position_x, position_y, nom, voisins):
-    map[position_y][position_x] = (nom, voisins)
-
 def creer_map(liste_niveaux, taille):
+    """
+    Génère une Carte remplie de Valeurs sous Forme de Tuples.
+    """
     map = generer_map(taille)
     for niveau in liste_niveaux:
         position_x, position_y, nom, voisins = niveau
         inserer_niveau(map, position_x, position_y, nom, voisins)
     return map
+
+def inserer_niveau(map, position_x, position_y, nom, voisins):
+    map[position_y][position_x] = (nom, voisins)
 
 def afficher_map(map, canvas):
     positions = {}
