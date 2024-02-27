@@ -73,3 +73,51 @@ def get_joka_id_by_name(joka_name):
     cursor.close()
     conn.close()
     return id_joka
+
+def get_puissance_technique(nom_technique, id_joka):
+    conn = sqlite3.connect('Database/Database.db')
+    curseur = conn.cursor()
+    curseur.execute("""
+        SELECT Puissance
+        FROM Technique
+        WHERE Nom = ?
+    """, (nom_technique,))
+    puissance = curseur.fetchone()[0]
+    return puissance
+
+def get_type_technique(nom_technique):
+    conn = sqlite3.connect('Database/Database.db')
+    curseur = conn.cursor()
+    curseur.execute("""
+        SELECT Type
+        FROM Technique
+        WHERE Nom = ?
+    """, (nom_technique,))
+    type_technique = curseur.fetchone()[0]
+    return type_technique
+
+def get_techniques_disponibles(id_joka):
+    conn = sqlite3.connect('Database/Database.db')
+    curseur = conn.cursor()
+    curseur.execute("""
+        SELECT Technique.Nom
+        FROM Technique
+        INNER JOIN Association ON Technique.ID_Technique = Association.ID_Technique
+        WHERE Association.ID_Joka = ?
+    """, (id_joka,))
+    techniques = curseur.fetchall()
+    return [technique[0] for technique in techniques]
+
+def get_nom_joka(id_joka):
+    conn = sqlite3.connect('Database/Database.db')
+    curseur = conn.cursor()
+    curseur.execute("SELECT Nom FROM Joka WHERE ID_Joka = ?", (id_joka,))
+    nom = curseur.fetchone()[0]
+    return nom
+
+def get_vie_joka(id_joka):
+    conn = sqlite3.connect('Database/Database.db')
+    curseur = conn.cursor()
+    curseur.execute("SELECT Vie FROM Joka WHERE ID_Joka = ?", (id_joka,))
+    vie = curseur.fetchone()[0]
+    return vie
