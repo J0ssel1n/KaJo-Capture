@@ -141,8 +141,13 @@ def confirmer_changement_couleur(nom, canvas, circles, positions, voisins):
         circle_id = circles[nom]
         combat_results = []
         for joka_id in jokas_ids:
-            combat_result = Combat(joka_principal, joka_id)
-            combat_results.append(combat_result)
+            root.withdraw()
+            combat_window = tk.Toplevel()
+            app = CombatGUI(combat_window, joka_principal, joka_id)
+            combat_window.lift()
+            combat_window.mainloop()
+            combat_results.append(app.result)
+            root.deiconify()
 
         if all(combat_results):
             canvas.itemconfig(circle_id, fill="green")

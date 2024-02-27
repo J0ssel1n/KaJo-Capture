@@ -6,6 +6,7 @@ import random
 class CombatGUI:
     def __init__(self, parent, id_joka1, id_joka2):
         self.parent = parent
+        self.result = None
         self.parent.title("Combat de Jokas")
         
         screen_width = parent.winfo_screenwidth()
@@ -16,7 +17,7 @@ class CombatGUI:
 
         parent.geometry("+%d+%d" % (x, y))
 
-        self.conn = sqlite3.connect('Database.db')
+        self.conn = sqlite3.connect('Database/Database.db')
         self.curseur = self.conn.cursor()
 
         self.id_joka1 = id_joka1
@@ -92,13 +93,13 @@ class CombatGUI:
 
         if self.vie_joka1 <= 0:
             messagebox.showinfo("Fin du combat", f"{self.nom_joka2} a gagné !")
+            self.result = False
             self.parent.quit()
-            return False
         
         elif self.vie_joka2 <= 0:
             messagebox.showinfo("Fin du combat", f"{self.nom_joka1} a gagné !")
+            self.result = True
             self.parent.quit()
-            return True
 
     def get_puissance_technique(self, nom_technique, id_joka):
         self.curseur.execute("""
