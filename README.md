@@ -33,6 +33,6 @@ Le Rapport est en Cours de Rédaction.
 
 # Informations
 
-Ce Projet utilise la licence MIT qui permet aux Utilisateurs de faire ce qu'ils veulent avec le Code tant qu'ils incluent la Notice de Copyright et la Clause de Non-Responsabilité. Elle permet également la Redistribution sous différentes formes, y compris Commerciales.
+Ce Projet utilise la licence MIT qui permet aux Utilisateurs de faire ce qu'ils veulent avec le Code tant qu'ils incluent la Notice de Copyright et la Clause de Non-Responsabilité.
 
 Ce Texte a été rédigé en Markdown pour Présenter le Projet sur GitHub. Merci de votre Lecture.
