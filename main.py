@@ -79,11 +79,11 @@ def afficher_map(map, canvas):
 
 def confirmer_changement_couleur(nom, canvas, circles, positions, voisins):
     if joka_principal is None:
-        messagebox.showwarning("Attention", "Merci de Choisir un Joka Principal dans la Liste à Droite avant de Lancer un Combat !")
+        messagebox.showwarning("Attention", "Merci de Choisir un Joka Principal dans la Liste à Gauche avant de Lancer un Combat !")
     else:
         jokas_ids = database.get_jokas_by_location(nom)
         jokas_names = [database.get_joka_name_by_id(joka_id) for joka_id in jokas_ids]
-        
+
         confirmation_message = f"Joka(s) détecté(s) dans le secteur {nom}.\n\n"
         confirmation_message += "\n".join(jokas_names)
         confirmation_message += "\n\nS'y rendre ?"
@@ -101,6 +101,9 @@ def confirmer_changement_couleur(nom, canvas, circles, positions, voisins):
                 root.deiconify()
                 combat_window.destroy()
 
+                if app.result:
+                    database.update_statut(joka_id, "Oui")
+
             if all(combat_results):
                 canvas.itemconfig(circle_id, fill="green")
                 for voisin in voisins:
@@ -109,7 +112,7 @@ def confirmer_changement_couleur(nom, canvas, circles, positions, voisins):
                         voisin_id = circles[voisin]
                         canvas.itemconfig(voisin_id, fill="green")
             else:
-                messagebox.showinfo("Information", "Combat échoué. Impossible de colorier les zones voisines.")
+                messagebox.showinfo("Information", "Combat échoué. Impossible d'Explorer Plus Loin'")
 
 def on_cercle_click(nom, position, voisins, positions, circles):
     if nom.strip() in circles:
@@ -123,6 +126,10 @@ def on_cercle_click(nom, position, voisins, positions, circles):
         print(f"Nom Incorrect: {nom}")
 
 root = tk.Tk()
+
+def quitter():
+    if messagebox.askokcancel("Quitter", "Êtes-vous sûr de vouloir Quitter ?"):
+        root.destroy()
 
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
@@ -160,6 +167,12 @@ for row in database.get_joka_table():
 
 tree.pack(fill='both', expand=True)
 
+menu_bar = tk.Menu(root)
+file_menu = tk.Menu(menu_bar, tearoff=0)
+file_menu.add_command(label="Quitter", command=quitter)
+menu_bar.add_cascade(label="Fichier", menu=file_menu)
+root.config(menu=menu_bar)
+
 def afficher_details_joka(event):
     item = tree.selection()[0]
     joka_id = tree.item(item, "values")[0]
@@ -167,6 +180,12 @@ def afficher_details_joka(event):
     joka_name = database.get_joka_name_by_id(joka_id)
     joka_info = database.get_joka_info_by_id(joka_id)
     joka_status = database.get_jokas_by_status("Oui") if joka_name in database.get_jokas_by_status("Oui") else None
+    joka_techniques = database.get_techniques_disponibles(joka_id)
+
+    techniques_puissance = {}
+    for technique in joka_techniques:
+        puissance = database.get_puissance_technique(technique, joka_id)
+        techniques_puissance[technique] = puissance
 
     if joka_name and joka_info:
         joka_window = tk.Toplevel()
@@ -181,12 +200,19 @@ def afficher_details_joka(event):
         label_statut = tk.Label(joka_window, text="Statut : " + ("Capturé" if joka_status else "Non Capturé"))
         label_statut.pack()
 
+        techniques_label = tk.Label(joka_window, text="\nTechniques : ")
+        techniques_label.pack()
+
+        for technique, puissance in techniques_puissance.items():
+            label_technique = tk.Label(joka_window, text=f"{technique} [{puissance}]")
+            label_technique.pack()
+
         if joka_principal and joka_id == joka_principal[0]:
-            label_principal = tk.Label(joka_window, text="Joka Principal : Oui")
+            label_principal = tk.Label(joka_window, text="\nJoka Principal : Oui")
             button_text = "Choisir en Joka Principal"
             button_selectionner = tk.Button(joka_window, text=button_text, state="disabled")
         elif joka_status:
-            label_principal = tk.Label(joka_window, text="Joka Principal : Non")
+            label_principal = tk.Label(joka_window, text="\nJoka Principal : Non")
             button_text = "Choisir en Joka Principal"
             button_selectionner = tk.Button(joka_window, text=button_text, command=lambda: set_joka_principal(joka_id, joka_window))
         else:

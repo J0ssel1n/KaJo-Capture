@@ -121,3 +121,10 @@ def get_vie_joka(id_joka):
     curseur.execute("SELECT Vie FROM Joka WHERE ID_Joka = ?", (id_joka,))
     vie = curseur.fetchone()[0]
     return vie
+
+def update_statut(joka_id, est_capturé):
+    conn = sqlite3.connect('Database/Database.db')
+    c = conn.cursor()
+    c.execute("UPDATE Statut SET estCapturé = ? WHERE ID_Joka = ?", (est_capturé, joka_id))
+    conn.commit()
+    conn.close()

@@ -83,6 +83,7 @@ class CombatGUI:
         
         elif self.vie_joka2 <= 0:
             messagebox.showinfo("Fin du combat", f"{self.nom_joka1} a gagné !")
+            messagebox.showinfo("Enregistrement", f"{self.nom_joka2} peut maintenant être Choisi en tant que Joka Principal.")
             self.result = True
             self.parent.quit()
 
