@@ -232,12 +232,31 @@ def afficher_details_joka(event):
         label_statut = tk.Label(joka_window, text="Statut : " + ("Capturé" if joka_status else "Non Capturé"))
         label_statut.pack()
 
-        button_selectionner = tk.Button(joka_window, text="Choisir en Joka Principal",
-                                        command=lambda: choisir_joka_principal(joka_id))
+        # Vérifier si le Joka sélectionné est le Joka Principal
+        if joka_principal == joka_id and joka_status:
+            label_principal = tk.Label(joka_window, text="Joka Principal : Oui")
+            button_text = "Choisir en Joka Principal"
+            button_selectionner = tk.Button(joka_window, text=button_text, state="disabled")  # Désactiver le bouton
+        elif joka_status:
+            label_principal = tk.Label(joka_window, text="Joka Principal : Non")
+            button_text = "Choisir en Joka Principal"
+            button_selectionner = tk.Button(joka_window, text=button_text, command=lambda: set_joka_principal(joka_id, joka_window))
+        else:
+            label_principal = tk.Label(joka_window, text="Joka Principal : Ne peut être sélectionné (non capturé)")
+            button_text = "Choisir en Joka Principal"
+            joka_id = None
+            button_selectionner = tk.Button(joka_window, text=button_text, state="disabled")  # Désactiver le bouton
+
+        label_principal.pack()
         button_selectionner.pack()
 
     else:
         messagebox.showwarning("Attention", "Détails du Joka Non Trouvés dans la Base de Données.")
+
+def set_joka_principal(joka_id, joka_window):
+    global joka_principal
+    joka_principal = joka_id
+    joka_window.destroy()
 
 tree.bind("<Double-1>", afficher_details_joka)
 
