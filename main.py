@@ -2,6 +2,8 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+from PIL import Image, ImageTk
+import webbrowser
 
 # Importation du Gestionnaire de la Base de Données
 import Database.database as database
@@ -131,6 +133,32 @@ def quitter():
     if messagebox.askokcancel("Quitter", "Êtes-vous sûr de vouloir Quitter ?"):
         root.destroy()
 
+def open_database_link():
+    webbrowser.open("https://colab.research.google.com/drive/1ZjbpvETwnX6evFEP1EMoqe3I823bBU86?usp=sharing")
+
+def show_about_window():
+    about_window = tk.Toplevel(root)
+    about_window.title("À propos")
+
+    logo_image = Image.open("Ressources/logo.png")
+    logo_image = logo_image.resize((200, 200), Image.Resampling.LANCZOS)
+    logo_photo = ImageTk.PhotoImage(logo_image)
+
+    about_window.logo_photo = logo_photo
+
+    logo_label = tk.Label(about_window, image=logo_photo)
+    logo_label.pack(pady=(10, 20))
+
+    title_label = tk.Label(about_window, text="KaJo Capture", font=("Arial", 16, "bold"))
+    title_label.pack()
+
+    created_by_label = tk.Label(about_window, text="Créé par\nJosselin LE TALLEC\nKamal KANAAN", font=("Arial", 12))
+    created_by_label.pack(pady=(10, 20))
+
+    github_link_label = tk.Label(about_window, text="GitHub\n", font=("Arial", 12, "underline"), cursor="hand2")
+    github_link_label.pack()
+    github_link_label.bind("<Button-1>", lambda e: webbrowser.open("https://github.com/J0ssel1n/KaJo-Capture"))
+
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 
@@ -169,6 +197,8 @@ tree.pack(fill='both', expand=True)
 
 menu_bar = tk.Menu(root)
 file_menu = tk.Menu(menu_bar, tearoff=0)
+file_menu.add_command(label="À Propos", command=show_about_window)
+file_menu.add_command(label="Télécharger Base de Données", command=open_database_link)
 file_menu.add_command(label="Quitter", command=quitter)
 menu_bar.add_cascade(label="Fichier", menu=file_menu)
 root.config(menu=menu_bar)
