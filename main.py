@@ -232,7 +232,6 @@ def afficher_details_joka(event):
         label_statut = tk.Label(joka_window, text="Statut : " + ("Capturé" if joka_status else "Non Capturé"))
         label_statut.pack()
 
-        # Vérifier si le Joka sélectionné est le Joka Principal
         if joka_principal == joka_id and joka_status:
             label_principal = tk.Label(joka_window, text="Joka Principal : Oui")
             button_text = "Choisir en Joka Principal"
