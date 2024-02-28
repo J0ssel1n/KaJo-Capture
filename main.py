@@ -11,58 +11,6 @@ from Combat.gameGraphique import *
 
 joka_principal = None # Variable Globale pour Stocker l'Identifiant du Joka Principal
 
-def choisir_joka_principal():
-
-    # On Cache la Fenêtre Principale
-    root.withdraw()
-
-    # On Crée une Nouvelle Fenêtre Pop-Up
-    joka_principal_window = tk.Toplevel()
-    joka_principal_window.title("Choisir le Joka Principal")
-    
-    # Calcul de la Taille et de la Position Pour Centrer la Fenêtre au Milieu de l'Ecran
-    window_width = 400
-    window_height = 50
-    screen_width = root.winfo_screenwidth()
-    screen_height = root.winfo_screenheight()
-    x = (screen_width - window_width) // 2
-    y = (screen_height - window_height) // 2
-    
-    joka_principal_window.geometry(f"{window_width}x{window_height}+{x}+{y}")
-
-    # Récupération des Jokas Capturés depuis la Base de Données
-    jokas = database.get_jokas_by_status("Oui")
-
-    # Création d'une Liste des Jokas Disponibles
-    jokas_dropdown = ttk.Combobox(joka_principal_window, values=jokas)
-    jokas_dropdown.pack()
-
-    # Si un élément est Selectionné dans la Liste
-    def valider_selection():
-        global joka_principal
-        joka_principal_name = jokas_dropdown.get()
-        if joka_principal_name:
-
-            # Récupération de l'Identifiant du Joka correspondant au Nom Selectionné
-            joka_principal_id = database.get_joka_id_by_name(joka_principal_name)
-            if joka_principal_id:
-                joka_principal = joka_principal_id[0]
-
-                # Destruction de la Fenêtre Pop-Up et Réapparition de la Fenêtre Principale
-                joka_principal_window.destroy()
-                root.deiconify()
-            else:
-                messagebox.showwarning("Attention", "ID du Joka Principal non trouvé.")
-        else:
-            messagebox.showwarning("Attention", "Veuillez Sélectionner un Joka pour Commencer votre Service.")
-
-    # Bouton OK pour Valider la Sélection
-    bouton_ok = tk.Button(joka_principal_window, text="OK", command=valider_selection)
-    bouton_ok.pack()
-
-    # Attente que cette Fenêtre soit Fermée avant de Continuer
-    joka_principal_window.wait_window(joka_principal_window)
-
 def generer_map(taille):
     """
     Génère une Carte remplie de Cases Vides.
@@ -130,35 +78,38 @@ def afficher_map(map, canvas):
                     canvas.tag_bind(nom, '<Button-1>', lambda e, nom=nom, position=(x, y), voisins=voisins, positions=positions, circles=circles: on_cercle_click(nom, position, voisins, positions, circles))
 
 def confirmer_changement_couleur(nom, canvas, circles, positions, voisins):
-    jokas_ids = database.get_jokas_by_location(nom)
-    jokas_names = [database.get_joka_name_by_id(joka_id) for joka_id in jokas_ids]
-    
-    confirmation_message = f"Joka(s) détecté(s) dans le secteur {nom}.\n\n"
-    confirmation_message += "\n".join(jokas_names)
-    confirmation_message += "\n\nS'y rendre ?"
+    if joka_principal is None:
+        messagebox.showwarning("Attention", "Merci de Choisir un Joka Principal dans la Liste à Droite avant de Lancer un Combat !")
+    else:
+        jokas_ids = database.get_jokas_by_location(nom)
+        jokas_names = [database.get_joka_name_by_id(joka_id) for joka_id in jokas_ids]
+        
+        confirmation_message = f"Joka(s) détecté(s) dans le secteur {nom}.\n\n"
+        confirmation_message += "\n".join(jokas_names)
+        confirmation_message += "\n\nS'y rendre ?"
 
-    if messagebox.askyesno("Confirmation", confirmation_message):
-        circle_id = circles[nom]
-        combat_results = []
-        for joka_id in jokas_ids:
-            root.withdraw()
-            combat_window = tk.Toplevel()
-            app = CombatGUI(combat_window, joka_principal, joka_id)
-            combat_window.lift()
-            combat_window.mainloop()
-            combat_results.append(app.result)
-            root.deiconify()
-            combat_window.destroy()
+        if messagebox.askyesno("Confirmation", confirmation_message):
+            circle_id = circles[nom]
+            combat_results = []
+            for joka_id in jokas_ids:
+                root.withdraw()
+                combat_window = tk.Toplevel()
+                app = CombatGUI(combat_window, joka_principal, joka_id)
+                combat_window.lift()
+                combat_window.mainloop()
+                combat_results.append(app.result)
+                root.deiconify()
+                combat_window.destroy()
 
-        if all(combat_results):
-            canvas.itemconfig(circle_id, fill="green")
-            for voisin in voisins:
-                voisin = voisin.strip()
-                if voisin in positions and voisin in circles:
-                    voisin_id = circles[voisin]
-                    canvas.itemconfig(voisin_id, fill="green")
-        else:
-            messagebox.showinfo("Information", "Combat échoué. Impossible de colorier les zones voisines.")
+            if all(combat_results):
+                canvas.itemconfig(circle_id, fill="green")
+                for voisin in voisins:
+                    voisin = voisin.strip()
+                    if voisin in positions and voisin in circles:
+                        voisin_id = circles[voisin]
+                        canvas.itemconfig(voisin_id, fill="green")
+            else:
+                messagebox.showinfo("Information", "Combat échoué. Impossible de colorier les zones voisines.")
 
 def on_cercle_click(nom, position, voisins, positions, circles):
     if nom.strip() in circles:
@@ -172,8 +123,6 @@ def on_cercle_click(nom, position, voisins, positions, circles):
         print(f"Nom Incorrect: {nom}")
 
 root = tk.Tk()
-
-choisir_joka_principal()
 
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
@@ -232,19 +181,19 @@ def afficher_details_joka(event):
         label_statut = tk.Label(joka_window, text="Statut : " + ("Capturé" if joka_status else "Non Capturé"))
         label_statut.pack()
 
-        if joka_principal == joka_id and joka_status:
+        if joka_principal and joka_id == joka_principal[0]:
             label_principal = tk.Label(joka_window, text="Joka Principal : Oui")
             button_text = "Choisir en Joka Principal"
-            button_selectionner = tk.Button(joka_window, text=button_text, state="disabled")  # Désactiver le bouton
+            button_selectionner = tk.Button(joka_window, text=button_text, state="disabled")
         elif joka_status:
             label_principal = tk.Label(joka_window, text="Joka Principal : Non")
             button_text = "Choisir en Joka Principal"
             button_selectionner = tk.Button(joka_window, text=button_text, command=lambda: set_joka_principal(joka_id, joka_window))
         else:
-            label_principal = tk.Label(joka_window, text="Joka Principal : Ne peut être sélectionné (non capturé)")
+            label_principal = tk.Label(joka_window, text="Joka Principal : Non")
             button_text = "Choisir en Joka Principal"
             joka_id = None
-            button_selectionner = tk.Button(joka_window, text=button_text, state="disabled")  # Désactiver le bouton
+            button_selectionner = tk.Button(joka_window, text=button_text, state="disabled")
 
         label_principal.pack()
         button_selectionner.pack()
