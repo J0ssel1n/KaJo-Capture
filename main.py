@@ -85,7 +85,7 @@ def afficher_map(map, canvas):
 
                     canvas.itemconfig(oval, tags=nom)
 
-                    canvas.tag_bind(nom, '<Button-1>', lambda e, nom=nom, position=(x, y), voisins=voisins, positions=positions, circles=circles: on_cercle_click(nom, position, voisins, positions, circles))
+                    canvas.tag_bind(nom, '<Button-1>', lambda e, nom=nom, voisins=voisins, positions=positions, circles=circles: on_cercle_click(nom, voisins, positions, circles))
 
 def confirmer_changement_couleur(nom, canvas, circles, positions, voisins):
     """
