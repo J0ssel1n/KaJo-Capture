@@ -47,7 +47,7 @@ def get_jokas_by_location(location):
     Récupère les identifiants des Jokas présents dans un lieu spécifique.
 
     Entrée :
-        location (str): Le lieu à rechercher.
+        location, de Type str, est Le lieu à rechercher.
 
     Sortie :
         list: Liste des identifiants des Jokas présents dans le lieu donné.
@@ -64,7 +64,7 @@ def get_joka_name_by_id(joka_id):
     Récupère le nom d'un Joka en fonction de son identifiant.
 
     Entrée :
-        joka_id (int): L'identifiant du Joka.
+        joka_id, de Type int, est L'identifiant du Joka.
 
     Sortie :
         str: Le nom du Joka.
@@ -81,7 +81,7 @@ def get_joka_info_by_id(joka_id):
     Récupère les informations d'un Joka en fonction de son identifiant.
 
     Entrée :
-        joka_id (int): L'identifiant du Joka.
+        joka_id, de Type int, est L'identifiant du Joka.
 
     Sortie :
         dict: Un dictionnaire contenant les informations du Joka (ID, Nom, Vie).
