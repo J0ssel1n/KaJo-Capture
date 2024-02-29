@@ -52,6 +52,14 @@ def inserer_niveau(map, position_x, position_y, nom, voisins):
     map[position_y][position_x] = (nom, voisins)
 
 def afficher_map(map, canvas):
+    """
+    Affiche la Carte sur le Canvas.
+
+    Entrée :
+        map, de Type list, représente le Graphe à Afficher.
+        canvas, de Type tkinter.Canvas, est le Canvas sur lequel la Carte va Être Dessinée.
+    Sortie : Ajoute les Éléments Graphiques de la Carte sur le Canvas.
+    """
     positions = {}
     circles = {}
 
@@ -80,6 +88,17 @@ def afficher_map(map, canvas):
                     canvas.tag_bind(nom, '<Button-1>', lambda e, nom=nom, position=(x, y), voisins=voisins, positions=positions, circles=circles: on_cercle_click(nom, position, voisins, positions, circles))
 
 def confirmer_changement_couleur(nom, canvas, circles, positions, voisins):
+    """
+    Change la Couleur du Cercle Cliqué et des Cercles des Niveaux Voisins.
+
+    Entrée :
+        nom, de Type str, est le Nom du Niveau Cliqué.
+        canvas, de Type tkinter.Canvas, est le Canvas sur lequel la Carte est Dessinée.
+        circles, de Type dict, est un Dictionnaire qui Contient les Identifiants des Cercles Dessinés sur le Canvas.
+        positions, de Type dict, est un Dictionnaire qui Contient les Positions des Niveaux sur la Carte.
+        voisins, de Type list, est la Liste des Voisins du Niveau Cliqué.
+    Sortie : Change la Couleur des Cercles Cliqués et des Cercles des Niveaux Voisins.
+    """
     if joka_principal is None:
         messagebox.showwarning("Attention", "Merci de Choisir un Joka Principal dans la Liste à Gauche avant de Lancer un Combat !")
     else:
@@ -116,7 +135,16 @@ def confirmer_changement_couleur(nom, canvas, circles, positions, voisins):
             else:
                 messagebox.showinfo("Information", "Combat échoué. Impossible d'Explorer Plus Loin'")
 
-def on_cercle_click(nom, position, voisins, positions, circles):
+def on_cercle_click(nom, voisins, positions, circles):
+    """
+    Gère l'événement lorsqu'un cercle est cliqué sur la carte.
+
+    Entrée :
+        nom (str): Le nom du niveau cliqué.
+        voisins (list): La liste des voisins du niveau cliqué.
+        positions (dict): Un dictionnaire contenant les positions des niveaux sur la carte.
+        circles (dict): Un dictionnaire contenant les identifiants des cercles dessinés sur le canvas.
+    """
     if nom.strip() in circles:
         circle_id = circles[nom]
         fill_color = canvas.itemcget(circle_id, "fill")
@@ -130,15 +158,24 @@ def on_cercle_click(nom, position, voisins, positions, circles):
 root = tk.Tk()
 
 def quitter():
+    """
+    Fonction pour quitter l'application après confirmation.
+    """
     if messagebox.askokcancel("Quitter", "Êtes-vous sûr de vouloir Quitter ?"):
         root.destroy()
 
 def open_database_link():
+    """
+    Fonction pour ouvrir le lien vers la base de données dans un navigateur web.
+    """
     webbrowser.open("https://colab.research.google.com/drive/1ZjbpvETwnX6evFEP1EMoqe3I823bBU86?usp=sharing")
 
 def show_about_window():
+    """
+    Fonction pour afficher la fenêtre "À Propos" avec les informations sur l'application.
+    """
     about_window = tk.Toplevel(root)
-    about_window.title("À propos")
+    about_window.title("À Propos")
 
     logo_image = Image.open("Ressources/logo.png")
     logo_image = logo_image.resize((200, 200), Image.Resampling.LANCZOS)
@@ -204,6 +241,12 @@ menu_bar.add_cascade(label="Fichier", menu=file_menu)
 root.config(menu=menu_bar)
 
 def afficher_details_joka(event):
+    """
+    Affiche les détails du Joka sélectionné dans la liste de gauche.
+
+    Entrée :
+        event : L'événement déclenché par un double clic sur un élément de la liste.
+    """
     item = tree.selection()[0]
     joka_id = tree.item(item, "values")[0]
 
@@ -258,6 +301,13 @@ def afficher_details_joka(event):
         messagebox.showwarning("Attention", "Détails du Joka Non Trouvés dans la Base de Données.")
 
 def set_joka_principal(joka_id, joka_window):
+    """
+    Définit le Joka sélectionné comme Joka principal.
+
+    Entrée :
+        joka_id (int) : L'identifiant du Joka sélectionné.
+        joka_window : La fenêtre des détails du Joka.
+    """
     global joka_principal
     joka_principal = joka_id
     joka_window.destroy()

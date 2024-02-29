@@ -3,22 +3,56 @@ import random
 
 class Combat:
     def __init__(self, id_joka1, id_joka2):
+        """
+        Initialise une instance de Combat.
+
+        Entrée :
+            id_joka1 (int): L'identifiant du premier Joka.
+            id_joka2 (int): L'identifiant du deuxième Joka.
+        """
         self.id_joka1 = id_joka1
         self.id_joka2 = id_joka2
         self.conn = sqlite3.connect('Database/Database.db')
         self.curseur = self.conn.cursor()
 
     def get_nom_joka(self, id_joka):
+        """
+        Récupère le nom d'un Joka en fonction de son identifiant.
+
+        Entrée :
+            id_joka (int): L'identifiant du Joka.
+
+        Sortie :
+            str: Le nom du Joka.
+        """
         self.curseur.execute("SELECT Nom FROM Joka WHERE ID_Joka = ?", (id_joka,))
         nom_joka = self.curseur.fetchone()[0]
         return nom_joka
 
     def get_vie_joka(self, nom_joka):
+        """
+        Récupère le nombre de points de vie d'un Joka en fonction de son nom.
+
+        Entrée :
+            nom_joka (str): Le nom du Joka.
+
+        Sortie :
+            int: Le nombre de points de vie du Joka.
+        """
         self.curseur.execute("SELECT Vie FROM Joka WHERE Nom = ?", (nom_joka,))
         vie_joka = self.curseur.fetchone()[0]
         return vie_joka
 
     def get_attaques_disponibles(self, id_joka):
+        """
+        Récupère les attaques disponibles pour un Joka donné.
+
+        Entrée :
+            id_joka (int): L'identifiant du Joka.
+
+        Sortie :
+            list: Liste des attaques disponibles pour le Joka. Chaque attaque est un tuple (Nom, Puissance, Type).
+        """
         self.curseur.execute("""
             SELECT Technique.Nom, Technique.Puissance, Technique.Type
             FROM Technique
@@ -29,6 +63,9 @@ class Combat:
         return attaques
 
     def combat(self):
+        """
+        Lance le combat entre deux Jokas en utilisant leurs attaques respectives jusqu'à ce qu'un Joka perde tous ses points de vie.
+        """
         nom_joka1 = self.get_nom_joka(self.id_joka1)
         nom_joka2 = self.get_nom_joka(self.id_joka2)
         vie_joka1 = self.get_vie_joka(nom_joka1)

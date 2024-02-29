@@ -13,6 +13,14 @@ from Database.database import *
 
 class CombatGUI:
     def __init__(self, parent, id_joka1, id_joka2):
+        """
+        Initialise l'interface graphique pour le combat de Jokas.
+
+        Entrée :
+            parent (tk.Tk): Fenêtre parente de l'interface.
+            id_joka1 (int): Identifiant du premier Joka.
+            id_joka2 (int): Identifiant du deuxième Joka.
+        """
         self.parent = parent
         self.result = None
         self.parent.title("Combat de Jokas")
@@ -53,6 +61,9 @@ class CombatGUI:
         self.confirm_button.pack()
 
     def confirmer_technique(self):
+        """
+        Confirme la Technique choisie et gère le Déroulement du Combat.
+        """
         technique_choisie = self.technique_choisie.get()
         puissance_technique = get_puissance_technique(technique_choisie, self.id_joka1)
 
@@ -88,12 +99,26 @@ class CombatGUI:
             self.parent.quit()
 
     def appliquer_technique(self, id_joka, puissance_technique):
+        """
+        Applique les dégâts d'une technique à un Joka.
+
+        Entrée :
+            id_joka (int): L'identifiant du Joka.
+            puissance_technique (int): La puissance de la technique.
+        """
         if id_joka == self.id_joka1:
             self.vie_joka1 = max(0, self.vie_joka1 - puissance_technique)
         else:
             self.vie_joka2 = max(0, self.vie_joka2 - puissance_technique)
 
     def appliquer_soin(self, id_joka, puissance_soin):
+        """
+        Applique les soins d'une technique à un Joka.
+
+        Entrée :
+            id_joka (int): L'identifiant du Joka.
+            puissance_soin (int): La puissance des soins.
+        """
         if id_joka == self.id_joka1:
             vie_max = get_vie_joka(self.id_joka1)
             self.vie_joka1 = min(vie_max, self.vie_joka1 + puissance_soin)
@@ -102,6 +127,13 @@ class CombatGUI:
             self.vie_joka2 = min(vie_max, self.vie_joka2 + puissance_soin)
 
 def Combat(ID_Joka1, ID_Joka2):
+    """
+    Lance le combat entre deux Jokas.
+
+    Entrée :
+        ID_Joka1 (int): L'identifiant du premier Joka.
+        ID_Joka2 (int): L'identifiant du deuxième Joka.
+    """
     root = tk.Tk()
     app = CombatGUI(root, ID_Joka1, ID_Joka2)
     root.mainloop()
