@@ -7,8 +7,8 @@ class Combat:
         Initialise une instance de Combat.
 
         Entrée :
-            id_joka1 (int): L'identifiant du premier Joka.
-            id_joka2 (int): L'identifiant du deuxième Joka.
+            id_joka1, de Type int, est L'identifiant du premier Joka.
+            id_joka2, de Type int, est L'identifiant du deuxième Joka.
         """
         self.id_joka1 = id_joka1
         self.id_joka2 = id_joka2
@@ -20,7 +20,7 @@ class Combat:
         Récupère le nom d'un Joka en fonction de son identifiant.
 
         Entrée :
-            id_joka (int): L'identifiant du Joka.
+            id_joka, de Type int, est L'identifiant du Joka.
 
         Sortie :
             str: Le nom du Joka.
@@ -34,7 +34,7 @@ class Combat:
         Récupère le nombre de points de vie d'un Joka en fonction de son nom.
 
         Entrée :
-            nom_joka (str): Le nom du Joka.
+            nom_joka, de Type str, est Le nom du Joka.
 
         Sortie :
             int: Le nombre de points de vie du Joka.
@@ -48,7 +48,7 @@ class Combat:
         Récupère les attaques disponibles pour un Joka donné.
 
         Entrée :
-            id_joka (int): L'identifiant du Joka.
+            id_joka, de Type int, est L'identifiant du Joka.
 
         Sortie :
             list: Liste des attaques disponibles pour le Joka. Chaque attaque est un tuple (Nom, Puissance, Type).

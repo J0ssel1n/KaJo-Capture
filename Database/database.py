@@ -106,7 +106,7 @@ def get_jokas_by_status(status):
     Récupère les noms des Jokas en fonction de leur statut.
 
     Entrée :
-        status (str): Le statut des Jokas (capturé ou non).
+        status, de Type str, est Le statut des Jokas (capturé ("Oui") ou non ("Non")).
 
     Sortie :
         list: Liste des noms des Jokas correspondant au statut donné.
@@ -124,7 +124,7 @@ def get_joka_id_by_name(joka_name):
     Récupère l'identifiant d'un Joka en fonction de son nom.
 
     Entrée :
-        joka_name (str): Le nom du Joka.
+        joka_name, de Type str, est Le nom du Joka.
 
     Sortie :
         int: L'identifiant du Joka.
@@ -142,8 +142,8 @@ def get_puissance_technique(nom_technique, id_joka):
     Récupère la puissance d'une technique pour un Joka donné.
 
     Entrée :
-        nom_technique (str): Le nom de la technique.
-        id_joka (int): L'identifiant du Joka.
+        nom_technique, de Type str, est Le nom de la technique.
+        id_joka, de Type int, est L'identifiant du Joka.
 
     Sortie :
         int: La puissance de la technique.
@@ -163,7 +163,7 @@ def get_type_technique(nom_technique):
     Récupère le type d'une technique.
 
     Entrée :
-        nom_technique (str): Le nom de la technique.
+        nom_technique, de Type str, est Le nom de la technique.
 
     Sortie :
         str: Le type de la technique.
@@ -183,7 +183,7 @@ def get_techniques_disponibles(id_joka):
     Récupère les techniques disponibles pour un Joka donné.
 
     Entrée :
-        id_joka (int): L'identifiant du Joka.
+        id_joka, de Type int, est L'identifiant du Joka.
 
     Sortie :
         list: Liste des noms des techniques disponibles pour le Joka.
@@ -204,7 +204,7 @@ def get_nom_joka(id_joka):
     Récupère le nom d'un Joka en fonction de son identifiant.
 
     Entrée :
-        id_joka (int): L'identifiant du Joka.
+        id_joka, de Type int, est L'identifiant du Joka.
 
     Sortie :
         str: Le nom du Joka.
@@ -220,7 +220,7 @@ def get_vie_joka(id_joka):
     Récupère le nombre de points de vie d'un Joka en fonction de son identifiant.
 
     Entrée :
-        id_joka (int): L'identifiant du Joka.
+        id_joka, de Type int, est L'identifiant du Joka.
 
     Sortie :
         int: Le nombre de points de vie du Joka.
@@ -236,7 +236,7 @@ def update_statut(joka_id, est_capturé):
     Met à jour le statut d'un Joka dans la base de données.
 
     Entrée :
-        joka_id (int): L'identifiant du Joka à mettre à jour.
+        joka_id, de Type int, est L'identifiant du Joka à mettre à jour.
         est_capturé (bool): Le nouveau statut du Joka (True pour capturé, False sinon).
     """
     conn = sqlite3.connect('Database/Database.db')

@@ -17,9 +17,9 @@ class CombatGUI:
         Initialise l'interface graphique pour le combat de Jokas.
 
         Entrée :
-            parent (tk.Tk): Fenêtre parente de l'interface.
-            id_joka1 (int): Identifiant du premier Joka.
-            id_joka2 (int): Identifiant du deuxième Joka.
+            parent, de Type tk.Tk, est la Fenêtre parente de l'interface.
+            id_joka1, de Type int, est l'Identifiant du premier Joka.
+            id_joka2, de Type int, est l'Identifiant du deuxième Joka.
         """
         self.parent = parent
         self.result = None
@@ -103,8 +103,8 @@ class CombatGUI:
         Applique les dégâts d'une technique à un Joka.
 
         Entrée :
-            id_joka (int): L'identifiant du Joka.
-            puissance_technique (int): La puissance de la technique.
+            id_joka, de Type int, est L'identifiant du Joka.
+            puissance_technique, de Type int, est La puissance de la technique.
         """
         if id_joka == self.id_joka1:
             self.vie_joka1 = max(0, self.vie_joka1 - puissance_technique)
@@ -116,8 +116,8 @@ class CombatGUI:
         Applique les soins d'une technique à un Joka.
 
         Entrée :
-            id_joka (int): L'identifiant du Joka.
-            puissance_soin (int): La puissance des soins.
+            id_joka, de Type int, est L'identifiant du Joka.
+            puissance_soin, de Type int, est la Puissance des soins.
         """
         if id_joka == self.id_joka1:
             vie_max = get_vie_joka(self.id_joka1)
@@ -131,8 +131,8 @@ def Combat(ID_Joka1, ID_Joka2):
     Lance le combat entre deux Jokas.
 
     Entrée :
-        ID_Joka1 (int): L'identifiant du premier Joka.
-        ID_Joka2 (int): L'identifiant du deuxième Joka.
+        ID_Joka1, de Type int, est L'identifiant du premier Joka.
+        ID_Joka2, de Type int, est L'identifiant du deuxième Joka.
     """
     root = tk.Tk()
     app = CombatGUI(root, ID_Joka1, ID_Joka2)

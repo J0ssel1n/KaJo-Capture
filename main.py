@@ -140,10 +140,10 @@ def on_cercle_click(nom, voisins, positions, circles):
     Gère l'événement lorsqu'un cercle est cliqué sur la carte.
 
     Entrée :
-        nom (str): Le nom du niveau cliqué.
-        voisins (list): La liste des voisins du niveau cliqué.
-        positions (dict): Un dictionnaire contenant les positions des niveaux sur la carte.
-        circles (dict): Un dictionnaire contenant les identifiants des cercles dessinés sur le canvas.
+        nom, de Type str, est le nom du niveau cliqué.
+        voisins, de Type list, est la liste des voisins du niveau cliqué.
+        positions, de Type dict, est un dictionnaire contenant les positions des niveaux sur la carte.
+        circles, de Type dict, est un dictionnaire contenant les identifiants des cercles dessinés sur le canvas.
     """
     if nom.strip() in circles:
         circle_id = circles[nom]
@@ -305,7 +305,7 @@ def set_joka_principal(joka_id, joka_window):
     Définit le Joka sélectionné comme Joka principal.
 
     Entrée :
-        joka_id (int) : L'identifiant du Joka sélectionné.
+        joka_id, de Type int, est l'identifiant du Joka sélectionné.
         joka_window : La fenêtre des détails du Joka.
     """
     global joka_principal
