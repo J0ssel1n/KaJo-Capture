@@ -25,7 +25,9 @@ Le module SQLite3 a été utilisé pour Communiquer avec la Base de Données : V
 
 # Installation
 
-**Le Programme n'est pas encore Disponible** et est toujours en Phase de Test. Il reste des Bugs à régler (notamment celui où le Joka Principal n'en fait qu'à sa tête en Combat dans <a href="https://github.com/J0ssel1n/KaJo-Capture/blob/main/main.py">main.py</a>. Vous pourrez retrouvez un exécutable en _.exe_ créé avec PyInstaller dans <a href="https://github.com/J0ssel1n/KaJo-Capture/releases">Releases</a>.
+1. <a href="https://pypi.org/project/pillow/">Télécharger Pillow</a> ou <a href="https://edupython.tuxfamily.org/">Installer EduPython</a>
+2. Télécharger les Fichiers du Projet
+3. Lancer main.py
 
 # Rapport de Projet
 
