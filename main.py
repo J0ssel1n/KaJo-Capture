@@ -60,7 +60,9 @@ def afficher_map(map, canvas):
         canvas, de Type tkinter.Canvas, est le Canvas sur lequel la Carte va Être Dessinée.
     Sortie : Ajoute les Éléments Graphiques de la Carte sur le Canvas.
     """
+    # Dictionnaire pour stocker les positions des nœuds sur la carte
     positions = {}
+    # Dictionnaire pour stocker les identifiants des cercles dessinés sur le canevas
     circles = {}
 
     for y, row in enumerate(map):
@@ -72,19 +74,23 @@ def afficher_map(map, canvas):
                 if nom.strip():
                     positions[nom] = (x, y)
 
-                    fill_color = "green" if nom == "Laboratoire" else "red"
+                    # Détermination de la couleur de remplissage en fonction du nom du nœud
+                    fill_color = "green" if nom == "Laboratoire" else "red" # On initialise le premier niveau
+                    # Création d'un cercle sur le canevas
                     oval = canvas.create_oval(x*200+200, y*200+200, x*200+250, y*200+250, fill=fill_color)
 
                     circles[nom] = oval
 
+                    # Dessiner des lignes pour relier les nœuds voisins
                     for voisin in voisins:
                         voisin = voisin.strip()
                         if voisin in positions:
                             voisin_x, voisin_y = positions[voisin]
                             canvas.create_line(x*200+225, y*200+225, voisin_x*200+225, voisin_y*200+225, fill="black")
 
+                    # Ajout d'une balise avec le nom du nœud pour chaque cercle
                     canvas.itemconfig(oval, tags=nom)
-
+                    # Liaison de l'événement de clic gauche à la fonction on_cercle_click avec des arguments spécifiques
                     canvas.tag_bind(nom, '<Button-1>', lambda e, nom=nom, voisins=voisins, positions=positions, circles=circles: on_cercle_click(nom, voisins, positions, circles))
 
 def confirmer_changement_couleur(nom, canvas, circles, positions, voisins):
@@ -99,9 +105,11 @@ def confirmer_changement_couleur(nom, canvas, circles, positions, voisins):
         voisins, de Type list, est la Liste des Voisins du Niveau Cliqué.
     Sortie : Change la Couleur des Cercles Cliqués et des Cercles des Niveaux Voisins.
     """
+    # Vérification si un Joka Principal a été sélectionné
     if joka_principal is None:
         messagebox.showwarning("Attention", "Merci de Choisir un Joka Principal dans la Liste à Gauche avant de Lancer un Combat !")
     else:
+        # Récupération des Jokas dans la zone sélectionnée
         jokas_ids = database.get_jokas_by_location(nom)
         jokas_names = [database.get_joka_name_by_id(joka_id) for joka_id in jokas_ids]
 
@@ -109,6 +117,7 @@ def confirmer_changement_couleur(nom, canvas, circles, positions, voisins):
         confirmation_message += "\n".join(jokas_names)
         confirmation_message += "\n\nS'y rendre ?"
 
+        # Affichage d'une boîte de dialogue pour confirmer le déplacement vers la zone
         if messagebox.askyesno("Confirmation", confirmation_message):
             circle_id = circles[nom]
             combat_results = []
@@ -125,7 +134,9 @@ def confirmer_changement_couleur(nom, canvas, circles, positions, voisins):
                 if app.result:
                     database.update_statut(joka_id, "Oui")
 
+            # Si le combat est réussi pour tous les jokas présents dans la zone
             if all(combat_results):
+                # Changement de couleur pour le cercle sélectionné et les cercles voisins
                 canvas.itemconfig(circle_id, fill="green")
                 for voisin in voisins:
                     voisin = voisin.strip()
@@ -148,7 +159,9 @@ def on_cercle_click(nom, voisins, positions, circles):
     if nom.strip() in circles:
         circle_id = circles[nom]
         fill_color = canvas.itemcget(circle_id, "fill")
+        # Vérifier si le cercle peut être exploré en vérifiant sa couleur
         if fill_color == "green":
+            # Confirmer le changement de couleur et déclencher les actions appropriées
             confirmer_changement_couleur(nom, canvas, circles, positions, voisins)
         else:
             messagebox.showinfo("Information", "Zone Inaccessible.\nMerci de Terminer les Précédentes")
@@ -196,27 +209,37 @@ def show_about_window():
     github_link_label.pack()
     github_link_label.bind("<Button-1>", lambda e: webbrowser.open("https://github.com/J0ssel1n/KaJo-Capture"))
 
+# Récupération de la largeur et de la hauteur de l'écran
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 
+# Calcul de la largeur et de la hauteur de la fenêtre en fonction de la taille de l'écran
 window_width = int(screen_width * 0.75)
 window_height = int(screen_height * 0.75)
 
+# Définition de la fenêtre en mode plein écran
 root.attributes('-fullscreen', True)
 
+# Définition du titre de la fenêtre principale
 root.title("KaJo Capture")
 
+# Création d'un conteneur de mise en page en utilisant un PanedWindow
 paned_window = tk.PanedWindow(root, orient="horizontal", sashrelief="raised", sashwidth=15)
 paned_window.pack(fill="both", expand=True)
 
+# Création d'un cadre gauche pour afficher la liste des Jokas
 left_frame = tk.Frame(paned_window)
 paned_window.add(left_frame)
+
+# Création d'un cadre droit pour afficher la carte du jeu
 right_frame = tk.Frame(paned_window)
 paned_window.add(right_frame)
 
+# Configuration des tailles minimales des cadres gauche et droit dans le PanedWindow
 paned_window.paneconfig(left_frame, minsize=window_width / 4)
 paned_window.paneconfig(right_frame, minsize=window_width / 2)
 
+# Création d'un widget Treeview pour afficher la liste des Jokas
 tree = ttk.Treeview(left_frame)
 tree["columns"]=("id","nom","vie")
 tree.column("#0", width=0, stretch=False)
@@ -227,17 +250,24 @@ tree.heading("id", text="ID_Joka")
 tree.heading("nom", text="Nom")
 tree.heading("vie", text="Vie")
 
+# Insertion des données des Jokas dans le Treeview à partir de la base de données
 for row in database.get_joka_table():
     tree.insert("", "end", values=row)
 
+# Affichage du Treeview dans le cadre gauche
 tree.pack(fill='both', expand=True)
 
+# Création d'une barre de menu
 menu_bar = tk.Menu(root)
 file_menu = tk.Menu(menu_bar, tearoff=0)
+
+# Ajout des options du menu avec leurs commandes associées
 file_menu.add_command(label="À Propos", command=show_about_window)
 file_menu.add_command(label="Télécharger Base de Données", command=open_database_link)
 file_menu.add_command(label="Quitter", command=quitter)
 menu_bar.add_cascade(label="Fichier", menu=file_menu)
+
+# Configuration de la barre de menu pour la fenêtre principale
 root.config(menu=menu_bar)
 
 def afficher_details_joka(event):
@@ -247,19 +277,23 @@ def afficher_details_joka(event):
     Entrée :
         event : L'événement déclenché par un double clic sur un élément de la liste.
     """
+    # Récupération de l'élément sélectionné dans le Treeview
     item = tree.selection()[0]
     joka_id = tree.item(item, "values")[0]
 
+    # Récupération du nom, des informations, du statut et des techniques du Joka à partir de la base de données
     joka_name = database.get_joka_name_by_id(joka_id)
     joka_info = database.get_joka_info_by_id(joka_id)
     joka_status = database.get_jokas_by_status("Oui") if joka_name in database.get_jokas_by_status("Oui") else None
     joka_techniques = database.get_techniques_disponibles(joka_id)
 
+    # Création d'un dictionnaire des techniques avec leur puissance
     techniques_puissance = {}
     for technique in joka_techniques:
         puissance = database.get_puissance_technique(technique, joka_id)
         techniques_puissance[technique] = puissance
 
+    # Affichage des détails du Joka dans une fenêtre Toplevel
     if joka_name and joka_info:
         joka_window = tk.Toplevel()
         joka_window.title("Détails du Joka")
@@ -280,6 +314,7 @@ def afficher_details_joka(event):
             label_technique = tk.Label(joka_window, text=f"{technique} [{puissance}]")
             label_technique.pack()
 
+        # Gestion de l'affichage du statut de Joka Principal et du bouton pour le sélectionner
         if joka_principal and joka_id == joka_principal[0]:
             label_principal = tk.Label(joka_window, text="\nJoka Principal : Oui")
             button_text = "Choisir en Joka Principal"
@@ -298,6 +333,7 @@ def afficher_details_joka(event):
         button_selectionner.pack()
 
     else:
+        # Affichage d'un avertissement si les détails du Joka ne sont pas trouvés dans la base de données
         messagebox.showwarning("Attention", "Détails du Joka Non Trouvés dans la Base de Données.")
 
 def set_joka_principal(joka_id, joka_window):

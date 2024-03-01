@@ -12,8 +12,8 @@ class Combat:
         """
         self.id_joka1 = id_joka1
         self.id_joka2 = id_joka2
-        self.conn = sqlite3.connect('Database/Database.db')
-        self.curseur = self.conn.cursor()
+        self.conn = sqlite3.connect('Database/Database.db') # Connexion à la Base de Données
+        self.curseur = self.conn.cursor() # Initialisation du curseur pour exécuter les requêtes SQL
 
     def get_nom_joka(self, id_joka):
         """
@@ -80,6 +80,9 @@ class Combat:
 
         while vie_joka1 > 0 and vie_joka2 > 0:
             print(f"\n{nom_joka1} peut utiliser les attaques suivantes:")
+            # Utilisation de enumerate pour obtenir l'index et l'attaque correspondante dans la liste attaques_joka1
+            # Enumerate permet de parcourir les éléments de la liste en leur associant un index
+            # Cela permet d'afficher les attaques avec leur numéro de manière ordonnée
             for index, attaque in enumerate(attaques_joka1):
                 print(f"{index + 1}. {attaque[0]} - Puissance: {attaque[1]} - Type: {attaque[2]}")
 
@@ -92,18 +95,28 @@ class Combat:
                 print(f"\n{nom_joka2} choisit {attaque_choisie_joka2[0]} - Puissance: {attaque_choisie_joka2[1]} - Type: {attaque_choisie_joka2[2]}")
             else:
                 attaque_choisie_joka2 = random.choice([attaque for attaque in attaques_joka2 if attaque[2] == "Attaque"])
-                print(f"\n{nom_joka2} choisit {attaque_choisie_joka2[0]} - Puissance: {attaque_choisie_joka2[1]} - Type: {attaque_choisie_joka2[2]} (automatique)")
+                print(f"\n{nom_joka2} choisit {attaque_choisie_joka2[0]} - Puissance: {attaque_choisie_joka2[1]} - Type: {attaque_choisie_joka2[2]}")
 
+            # Si la technique choisie par joka1 est une attaque
             if attaque_choisie_joka1[2] == "Attaque":
+                # Réduire les points de vie du joka2 par la puissance de l'attaque
                 vie_joka2 -= attaque_choisie_joka1[1]
+            # Si la technique choisie par joka1 est un soin
             elif attaque_choisie_joka1[2] == "Soin":
+                # Vérifier si les points de vie actuels du joka1 sont inférieurs à ses points de vie maximum
                 if vie_joka1 < vie_max_joka1:
+                    # Ajouter les points de vie de l'attaque au joka1, en prenant soin de ne pas dépasser ses points de vie maximum
                     vie_joka1 = min(vie_max_joka1, vie_joka1 + attaque_choisie_joka1[1])
 
+            # Si la technique choisie par joka2 est une attaque
             if attaque_choisie_joka2[2] == "Attaque":
+                # Réduire les points de vie du joka1 par la puissance de l'attaque
                 vie_joka1 -= attaque_choisie_joka2[1]
+            # Si l'attaque choisie par joka2 est un soin
             elif attaque_choisie_joka2[2] == "Soin":
+                # Vérifier si les points de vie actuels du joka2 sont inférieurs à ses points de vie maximum
                 if vie_joka2 < vie_max_joka2:
+                    # Ajouter les points de vie de l'attaque au joka2, en prenant soin de ne pas dépasser ses points de vie maximum
                     vie_joka2 = min(vie_max_joka2, vie_joka2 + attaque_choisie_joka2[1])
 
             print(f"\nVie restante de {nom_joka1}: {vie_joka1}")
