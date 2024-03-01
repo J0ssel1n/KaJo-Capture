@@ -26,7 +26,7 @@ Le module SQLite3 a été utilisé pour Communiquer avec la Base de Données : V
 # Installation
 
 1. <a href="https://pypi.org/project/pillow/">Télécharger Pillow</a> ou <a href="https://edupython.tuxfamily.org/">Installer EduPython</a>
-2. Télécharger les Fichiers du Projet
+2. Télécharger les Fichiers du Projet dans Code > Download ZIP
 3. Lancer main.py
 
 # Rapport de Projet
