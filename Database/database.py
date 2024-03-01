@@ -5,7 +5,7 @@ def get_joka_table():
     Récupère toutes les entrées de la table Joka dans la base de données.
 
     Sortie :
-        list: Liste de tuples représentant chaque entrée de la table Joka.
+        tableJoka, de Type list, est la liste de tuples représentant chaque entrée de la table Joka.
     """
     conn = sqlite3.connect("Database/Database.db")
     cur = conn.cursor()
@@ -19,7 +19,7 @@ def get_technique_table():
     Récupère toutes les entrées de la table Technique dans la base de données.
 
     Sortie :
-        list: Liste de tuples représentant chaque entrée de la table Technique.
+        tableTechnique, de Type list, est la liste de tuples représentant chaque entrée de la table Technique.
     """
     conn = sqlite3.connect("Database/Database.db")
     cur = conn.cursor()
@@ -33,7 +33,7 @@ def get_graphe_table():
     Récupère toutes les entrées de la table Graphe dans la base de données.
 
     Sortie :
-        list: Liste de tuples représentant chaque entrée de la table Graphe.
+        list : Liste de tuples représentant chaque entrée de la table Graphe.
     """
     conn = sqlite3.connect("Database/Database.db")
     cur = conn.cursor()
@@ -50,7 +50,7 @@ def get_jokas_by_location(location):
         location, de Type str, est Le lieu à rechercher.
 
     Sortie :
-        list: Liste des identifiants des Jokas présents dans le lieu donné.
+        list : Liste des identifiants des Jokas présents dans le lieu donné.
     """
     conn = sqlite3.connect('Database/Database.db')
     c = conn.cursor()
@@ -67,7 +67,7 @@ def get_joka_name_by_id(joka_id):
         joka_id, de Type int, est L'identifiant du Joka.
 
     Sortie :
-        str: Le nom du Joka.
+        str : Le nom du Joka.
     """
     conn = sqlite3.connect('Database/Database.db')
     c = conn.cursor()
@@ -84,7 +84,7 @@ def get_joka_info_by_id(joka_id):
         joka_id, de Type int, est L'identifiant du Joka.
 
     Sortie :
-        dict: Un dictionnaire contenant les informations du Joka (ID, Nom, Vie).
+        dict : Un dictionnaire contenant les informations du Joka (ID, Nom, Vie).
     """
     conn = sqlite3.connect("Database/Database.db")
     cursor = conn.cursor()
@@ -109,7 +109,7 @@ def get_jokas_by_status(status):
         status, de Type str, est Le statut des Jokas (capturé ("Oui") ou non ("Non")).
 
     Sortie :
-        list: Liste des noms des Jokas correspondant au statut donné.
+        list : Liste des noms des Jokas correspondant au statut donné.
     """
     conn = sqlite3.connect("Database/Database.db")
     cursor = conn.cursor()
@@ -127,7 +127,7 @@ def get_joka_id_by_name(joka_name):
         joka_name, de Type str, est Le nom du Joka.
 
     Sortie :
-        int: L'identifiant du Joka.
+        id_joka, de Type int, est l'identifiant du Joka.
     """
     conn = sqlite3.connect("Database/Database.db")
     cursor = conn.cursor()
@@ -146,7 +146,7 @@ def get_puissance_technique(nom_technique, id_joka):
         id_joka, de Type int, est L'identifiant du Joka.
 
     Sortie :
-        int: La puissance de la technique.
+        puissance, de Type int, est la puissance de la technique.
     """
     conn = sqlite3.connect('Database/Database.db')
     curseur = conn.cursor()
@@ -166,7 +166,7 @@ def get_type_technique(nom_technique):
         nom_technique, de Type str, est Le nom de la technique.
 
     Sortie :
-        str: Le type de la technique.
+        type_technique, de Type str, est le type de la technique.
     """
     conn = sqlite3.connect('Database/Database.db')
     curseur = conn.cursor()
@@ -186,7 +186,7 @@ def get_techniques_disponibles(id_joka):
         id_joka, de Type int, est L'identifiant du Joka.
 
     Sortie :
-        list: Liste des noms des techniques disponibles pour le Joka.
+        list : Liste des noms des techniques disponibles pour le Joka.
     """
     conn = sqlite3.connect('Database/Database.db')
     curseur = conn.cursor()
@@ -207,7 +207,7 @@ def get_nom_joka(id_joka):
         id_joka, de Type int, est L'identifiant du Joka.
 
     Sortie :
-        str: Le nom du Joka.
+        nom, de Type str, est le nom du Joka.
     """
     conn = sqlite3.connect('Database/Database.db')
     curseur = conn.cursor()
@@ -223,7 +223,7 @@ def get_vie_joka(id_joka):
         id_joka, de Type int, est L'identifiant du Joka.
 
     Sortie :
-        int: Le nombre de points de vie du Joka.
+        vie, de Type int, est le nombre de points de vie du Joka.
     """
     conn = sqlite3.connect('Database/Database.db')
     curseur = conn.cursor()
@@ -240,8 +240,8 @@ def update_statut(joka_id, est_capturé):
         est_capturé (bool): Le nouveau statut du Joka (True pour capturé, False sinon).
     """
     conn = sqlite3.connect('Database/Database.db')
-    c = conn.cursor()
-    c.execute("UPDATE Statut SET estCapturé = ? WHERE ID_Joka = ?", (est_capturé, joka_id))
+    curseur = conn.cursor()
+    curseur.execute("UPDATE Statut SET estCapturé = ? WHERE ID_Joka = ?", (est_capturé, joka_id))
     conn.commit()
     conn.close()
 
