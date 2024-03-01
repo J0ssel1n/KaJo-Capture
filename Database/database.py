@@ -237,7 +237,7 @@ def update_statut(joka_id, est_capturé):
 
     Entrée :
         joka_id, de Type int, est L'identifiant du Joka à mettre à jour.
-        est_capturé (bool): Le nouveau statut du Joka (True pour capturé, False sinon).
+        est_capturé, de Type bool, est le nouveau statut du Joka (Oui pour Capturé, Non sinon).
     """
     conn = sqlite3.connect('Database/Database.db')
     curseur = conn.cursor()
